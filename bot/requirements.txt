@@ -1,0 +1,21 @@
+aiogram==3.13.1
+
+# env
+python-dotenv==1.0.1
+
+# DB (PostgreSQL) + ORM
+SQLAlchemy==2.0.36
+asyncpg==0.30.0
+
+# migrations
+alembic==1.14.0
+
+# http client (если будешь ходить во внешние сервисы)
+httpx==0.27.2
+
+# pydantic
+pydantic==2.9.2
+pydantic-settings==2.6.0
+
+# logging
+loguru==0.7.2
