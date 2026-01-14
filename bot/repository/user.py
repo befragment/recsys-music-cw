@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -44,7 +46,7 @@ class UserRepository:
         )
         return result.scalar_one_or_none()
 
-    async def get_user_tracks(self, user_id: int) -> list[Track]:
+    async def get_user_tracks(self, user_id: int) -> List[Track]:
         """Получить все треки, с которыми взаимодействовал пользователь"""
         result = await self.session.execute(
             select(TrackORM)
@@ -64,7 +66,7 @@ class UserRepository:
             for track in track_orms
         ]
 
-    async def get_liked_tracks(self, user_id: int) -> list[Track]:
+    async def get_liked_tracks(self, user_id: int) -> List[Track]:
         """Получить все треки, которые пользователь лайкнул"""
         result = await self.session.execute(
             select(TrackORM)
@@ -84,7 +86,7 @@ class UserRepository:
             for track in track_orms
         ]
 
-    async def get_disliked_tracks(self, user_id: int) -> list[Track]:
+    async def get_disliked_tracks(self, user_id: int) -> List[Track]:
         """Получить все треки, которые пользователь дизлайкнул"""
         result = await self.session.execute(
             select(TrackORM)

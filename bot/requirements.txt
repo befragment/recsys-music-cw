@@ -19,3 +19,6 @@ pydantic-settings==2.6.0
 
 # logging
 loguru==0.7.2
+
+# di
+dependency-injector==4.48.3
