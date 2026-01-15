@@ -42,7 +42,13 @@ class UserRepository:
             user_orm = result.scalar_one_or_none()
             if user_orm is None:
                 return None
-            return User(telegram_id=user_orm.telegram_id)
+            return User(
+                id=user_orm.id,
+                telegram_id=user_orm.telegram_id,
+                gender=user_orm.gender,
+                age=user_orm.age,
+                favorite_music_genre=user_orm.favorite_music_genre,
+            )
         finally:
             await self.session.close()
 
