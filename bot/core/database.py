@@ -22,6 +22,7 @@ async_session_factory = async_sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
 
+
 async def database_shutdown():
     logger.info("Closing database...")
     await engine.dispose()

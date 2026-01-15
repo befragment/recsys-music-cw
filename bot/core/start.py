@@ -1,15 +1,14 @@
 from aiogram import Dispatcher, Bot
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
 from loguru import logger
 
 from core.database import database_shutdown
-from handler import start_router
+from handler import start_router, audioplayer_router
 
 
 def setup_handlers(dp: Dispatcher) -> None:
     """Регистрация всех обработчиков"""
     dp.include_router(start_router)
+    dp.include_router(audioplayer_router)
     logger.info("Handlers registered successfully")
 
 
@@ -31,10 +30,10 @@ async def start(dp: Dispatcher, bot: Bot) -> None:
     """Запуск бота с подключением обработчиков"""
     # Регистрация обработчиков
     setup_handlers(dp)
-    
+
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
-    
+
     # Запуск polling
     logger.info("Starting polling...")
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())

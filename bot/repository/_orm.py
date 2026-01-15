@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 
 from sqlalchemy import (
     BigInteger,
@@ -15,11 +14,10 @@ from sqlalchemy import (
     Index,
     func,
 )
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.database import Base
 from domain.entity.interaction import InteractionAction
-
 
 
 class UserORM(Base):
