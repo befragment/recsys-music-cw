@@ -175,5 +175,30 @@ async def cmd_liked(message: Message, container: Container):
 @router.message(Command("disliked"))
 async def cmd_disliked(message: Message, container: Container):
     """Показывает непонравившиеся треки"""
-    # Аналогично /liked
-    await message.answer("⚠️ Функция временно недоступна")
+    user_service = container.user_service()
+    
+    try:
+        # Пробуем через user_service
+        user_service = container.user_service()
+        
+        try:
+            user = await user_service.get_by_telegram_id(message.from_user.id)
+            if user:
+                disliked_tracks = await user_service.get_disliked_tracks(user.id)
+                
+                if disliked_tracks:
+                    response = "💔 <b>Вам не понравились:</b>\n\n"
+                    for i, track in enumerate(disliked_tracks[:10], 1):
+                        response += f"{i}. {track.title}\n"
+                    await message.answer(response, parse_mode=ParseMode.HTML)
+                else:
+                    await message.answer("📭 У вас пока нет непонравившихся треков")
+            else:
+                await message.answer("❌ Сначала заполните анкету через /start")
+                
+        except AttributeError:
+            await message.answer("⚠️ Функция временно недоступна")
+            
+    except Exception as e:
+        logger.error(f"Ошибка: {e}")
+        await message.answer("❌ Ошибка при получении списка")
