@@ -3,9 +3,8 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from domain.entity.user import User
+from domain.entity.user import User, InteractionAction
 from domain.entity.track import Track
-from domain.entity.interaction import InteractionAction
 from repository._orm import UserORM, TrackORM, InteractionORM
 
 
@@ -147,5 +146,17 @@ class UserRepository:
                 )
                 for track in track_orms
             ]
+        finally:
+            await self.session.close()
+
+    async def create_interaction(self, user_id: int, track_id: int, action: InteractionAction) -> None:
+        try:
+            interaction_orm = InteractionORM(
+                user_id=user_id,
+                track_id=track_id,
+                action=action,
+            )
+            self.session.add(interaction_orm)
+            await self.session.commit()
         finally:
             await self.session.close()

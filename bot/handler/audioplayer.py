@@ -8,7 +8,7 @@ from loguru import logger
 
 from core.container import Container
 from handler._keyboards import create_player_keyboard
-from domain.entity.interaction import InteractionAction
+from domain.entity.user import InteractionAction
 
 router = Router()
 
@@ -88,7 +88,6 @@ async def handle_player_action(callback: CallbackQuery, state: FSMContext, conta
     # Сохраняем взаимодействие если это like или dislike
     if action in ['like', 'dislike']:
         user_service = container.user_service()
-        interaction_service = container.interaction_service()
         
         try:
             # Проверяем, существует ли пользователь
@@ -105,7 +104,7 @@ async def handle_player_action(callback: CallbackQuery, state: FSMContext, conta
                 
                 # Сохраняем взаимодействие
                 interaction_action = InteractionAction.like if action == 'like' else InteractionAction.dislike
-                await interaction_service.handle_user_interaction(
+                await user_service.handle_user_interaction(
                     telegram_id=callback.from_user.id,
                     track_id=track.id,
                     interaction_type=interaction_action

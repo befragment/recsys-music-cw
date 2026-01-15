@@ -6,18 +6,16 @@ from sqlalchemy import (
     BigInteger,
     DateTime,
     Enum as SAEnum,
-    Float,
     ForeignKey,
     Integer,
     String,
-    UniqueConstraint,
     Index,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.database import Base
-from domain.entity.interaction import InteractionAction
+from domain.entity.user import InteractionAction
 
 
 class UserORM(Base):
