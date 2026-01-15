@@ -41,8 +41,10 @@ class InteractionService:
             user_id
         )
 
-        next_track: Track = self.model.pick_next(
-            interaction_type, user_likes, user_dislikes
+        next_track_path: str = self.model.pick_next(
+            user_likes
         )
+
+        next_track: Track = await self.track_repository.get_track_by_path(next_track_path)
 
         return next_track

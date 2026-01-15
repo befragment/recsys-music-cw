@@ -11,4 +11,3 @@ class TrackService:
     async def get_all_tracks(self) -> List[Track]:
         return await self.track_repository.get_all_tracks()
 
-

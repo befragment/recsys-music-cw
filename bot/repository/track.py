@@ -43,3 +43,20 @@ class TrackRepository:
             ]
         finally:
             await self.session.close()
+
+    async def get_track_by_path(self, path: str) -> Track | None:
+        try:
+            result = await self.session.execute(select(TrackORM).where(TrackORM.local_path == path))
+            track_orm = result.scalar_one_or_none()
+            if track_orm is None:
+                return None
+            return Track(
+                id=track_orm.id,
+                title=track_orm.title,
+                artist=track_orm.artist,
+                duration=track_orm.duration_ms or 0,
+                album=track_orm.album or "",
+                local_path=track_orm.local_path,
+            )
+        finally:
+            await self.session.close()
