@@ -8,8 +8,8 @@ class TrackService:
         self.track_repository = track_repository
 
 
-def track_path_in_fs(
-    root: str | Path | None = None, 
+def track_id_to_path(
+    root: str | Path | None = "data/fma_small", 
     track_id: int | None = None
 ) -> Path:
     root = Path(root)
@@ -18,4 +18,5 @@ def track_path_in_fs(
 
 
 if __name__ == "__main__":
-    print(track_path("data/fma_small", 148002))  # data/fma_small/148/148002.mp3
+    print(track_id_to_path(148002))  # data/fma_small/148/148002.mp3
+    

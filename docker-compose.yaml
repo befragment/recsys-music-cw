@@ -9,16 +9,73 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   bot:
     build:
-      context: .
+      context: ./bot
       dockerfile: Dockerfile
     ports:
       - 8000:8000
     environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      POSTGRES_URL: ${POSTGRES_URL}
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
 
+  migrate:
+    container_name: cu-migrate
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-postgres}
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    working_dir: /app
+    command: [ "sh", "-c", "alembic upgrade head" ]
+    restart: "no"
+  
+  populate_tracks:
+    container_name: cu-populate-tracks
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      POSTGRES_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-postgres}
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    volumes:
+      - ./data/fma_small:/app/data/fma_small:ro
+    working_dir: /app
+    command: [ "python", "scripts/populate_tracks.py", "--skip-if-exists", "--data-dir", "/app/data/fma_small" ]
+    restart: "no"
+  
 volumes:
   postgres_data:

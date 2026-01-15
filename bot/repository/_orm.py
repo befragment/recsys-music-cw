@@ -28,10 +28,10 @@ class UserORM(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
 
-    gender: Mapped[str] = mapped_column(String(1 << 4 - 1), nullable=False)
+    gender: Mapped[str] = mapped_column(String(15), nullable=False)
     age: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    favorite_music_genre: Mapped[str] = mapped_column(String(1 << 6 - 1), nullable=False)
+    favorite_music_genre: Mapped[str] = mapped_column(String(63), nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -40,12 +40,12 @@ class UserORM(Base):
     )
 
     # relations
-    interactions: Mapped[list["Interaction"]] = relationship(
+    interactions: Mapped[list["InteractionORM"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
-    feature_weights: Mapped[list["UserFeatureWeight"]] = relationship(
+    feature_weights: Mapped[list["UserFeatureWeightORM"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,
@@ -56,14 +56,14 @@ class TrackORM(Base):
     __tablename__ = "tracks"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    title: Mapped[str] = mapped_column(String(1 << 8 - 1), nullable=False)
-    artist: Mapped[str] = mapped_column(String(1 << 8 - 1), nullable=False)
-    album: Mapped[str | None] = mapped_column(String(1 << 8 - 1), nullable=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    artist: Mapped[str] = mapped_column(String(255), nullable=False)
+    album: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     local_path: Mapped[str] = mapped_column(String(1024), nullable=False)
-    telegram_file_id: Mapped[str | None] = mapped_column(String(1 << 8 - 1), nullable=True)
+    telegram_file_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -72,7 +72,7 @@ class TrackORM(Base):
     )
 
     # relations
-    interactions: Mapped[list["Interaction"]] = relationship(
+    interactions: Mapped[list["InteractionORM"]] = relationship(
         back_populates="track",
         cascade="all, delete-orphan",
         passive_deletes=True,
@@ -83,7 +83,7 @@ class InteractionORM(Base):
     __tablename__ = "interactions"
     __table_args__ = (
         Index("ix_interactions_user_created_at", "user_id", "created_at"),
-        # Index("ix_interactions_user_track_action", "user_id", "track_id", "action"),
+        Index("ix_interactions_user_track_action", "user_id", "track_id", "action"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -109,8 +109,8 @@ class InteractionORM(Base):
     )
 
     # relations
-    user: Mapped["User"] = relationship(back_populates="interactions")
-    track: Mapped["Track"] = relationship(back_populates="interactions")
+    user: Mapped["UserORM"] = relationship(back_populates="interactions")
+    track: Mapped["TrackORM"] = relationship(back_populates="interactions")
 
 
 class UserFeatureWeightORM(Base):
@@ -124,7 +124,7 @@ class UserFeatureWeightORM(Base):
         primary_key=True,  # composite PK is fine here (also enforces uniqueness)
     )
     feature_key: Mapped[str] = mapped_column(
-        String(1 << 8 - 1),
+        String(255),
         primary_key=True,
         nullable=False,
     )
@@ -139,4 +139,4 @@ class UserFeatureWeightORM(Base):
     )
 
     # relations
-    user: Mapped["User"] = relationship(back_populates="feature_weights")
+    user: Mapped["UserORM"] = relationship(back_populates="feature_weights")

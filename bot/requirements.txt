@@ -5,7 +5,9 @@ python-dotenv==1.0.1
 
 # DB (PostgreSQL) + ORM
 SQLAlchemy==2.0.36
+greenlet==3.1.1  # required for SQLAlchemy async support
 asyncpg==0.30.0
+psycopg[binary]==3.2.3  # для alembic миграций (синхронный драйвер)
 
 # migrations
 alembic==1.14.0
@@ -22,3 +24,6 @@ loguru==0.7.2
 
 # di
 dependency-injector==4.48.3
+
+# audio metadata
+mutagen==1.47.0
