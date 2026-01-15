@@ -93,29 +93,10 @@ def upgrade() -> None:
         unique=False,
     )
 
-    # Create user_feature_weights table
-    op.create_table(
-        "user_feature_weights",
-        sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("feature_key", sa.String(length=255), nullable=False),
-        sa.Column("weight", sa.Float(), nullable=False),
-        sa.Column(
-            "updated_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=False,
-        ),
-        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("user_id", "feature_key"),
-        sa.UniqueConstraint("user_id", "feature_key", name="uq_user_feature_key"),
-    )
-
 
 def downgrade() -> None:
-    op.drop_table("user_feature_weights")
     op.drop_index("ix_interactions_user_track_action", table_name="interactions")
     op.drop_index("ix_interactions_user_created_at", table_name="interactions")
     op.drop_table("interactions")
     op.drop_table("tracks")
     op.drop_table("users")
-    # interaction_action enum will be dropped automatically with the table

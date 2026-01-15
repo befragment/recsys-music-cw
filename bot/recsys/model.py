@@ -1,4 +1,5 @@
 from typing import List
+import random
 from domain.entity.track import Track
 import torch
 import torch.nn.functional as F
@@ -103,3 +104,5 @@ class RecommendationModel:
     @staticmethod
     def __build_path(track_id: int) -> str:
         return f"/app/data/fma_small/{track_id:06d}/{track_id:06d}.mp3"
+
+    

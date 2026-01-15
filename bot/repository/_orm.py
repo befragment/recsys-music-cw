@@ -6,18 +6,16 @@ from sqlalchemy import (
     BigInteger,
     DateTime,
     Enum as SAEnum,
-    Float,
     ForeignKey,
     Integer,
     String,
-    UniqueConstraint,
     Index,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.database import Base
-from domain.entity.interaction import InteractionAction
+from domain.entity.user import InteractionAction
 
 
 class UserORM(Base):
@@ -39,11 +37,6 @@ class UserORM(Base):
 
     # relations
     interactions: Mapped[list["InteractionORM"]] = relationship(
-        back_populates="user",
-        cascade="all, delete-orphan",
-        passive_deletes=True,
-    )
-    feature_weights: Mapped[list["UserFeatureWeightORM"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,
@@ -109,32 +102,3 @@ class InteractionORM(Base):
     # relations
     user: Mapped["UserORM"] = relationship(back_populates="interactions")
     track: Mapped["TrackORM"] = relationship(back_populates="interactions")
-
-
-class UserFeatureWeightORM(Base):
-    __tablename__ = "user_feature_weights"
-    __table_args__ = (
-        UniqueConstraint("user_id", "feature_key", name="uq_user_feature_key"),
-    )
-
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"),
-        primary_key=True,  # composite PK is fine here (also enforces uniqueness)
-    )
-    feature_key: Mapped[str] = mapped_column(
-        String(255),
-        primary_key=True,
-        nullable=False,
-    )
-
-    weight: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
-
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        nullable=False,
-        server_default=func.now(),
-        onupdate=func.now(),
-    )
-
-    # relations
-    user: Mapped["UserORM"] = relationship(back_populates="feature_weights")

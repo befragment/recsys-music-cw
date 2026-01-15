@@ -1,8 +1,7 @@
 from typing import List, Protocol
 
 from domain.entity.track import Track
-from domain.entity.user import User
-from domain.entity.interaction import Interaction, InteractionAction
+from domain.entity.user import User, InteractionAction
 
 """
 Файл в котором мы определяем контракты для работы с базой данных.
@@ -12,6 +11,8 @@ from domain.entity.interaction import Interaction, InteractionAction
 
 class TrackRepositoryProtocol(Protocol):
     async def get_all_tracks(self) -> List[Track]: ...
+    
+    async def get_track_by_path(self, path: str) -> Track | None: ...
 
 
 class UserRepositoryProtocol(Protocol):
@@ -29,12 +30,8 @@ class UserRepositoryProtocol(Protocol):
 
     async def get_disliked_tracks(self, user_id: int) -> List[Track]: ...
 
-
-class InteractionRepositoryProtocol(Protocol):
-    async def create(self, interaction: Interaction): ...
+    async def create_interaction(self, user_id: int, track_id: int, action: InteractionAction) -> None: ...
 
 
 class RecommendationModelProtocol(Protocol):
-    def pick_next(
-        self, interaction: InteractionAction, liked: List[Track], disliked: List[Track]
-    ) -> Track: ...
+    def pick_next(self, likes: List[Track]) -> str: ...
