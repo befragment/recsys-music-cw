@@ -55,5 +55,6 @@ class Container(containers.DeclarativeContainer):
         InteractionService,
         interaction_repository=interaction_repository,
         user_repository=user_repository,
+        track_repository=track_repository,
         recsys_model=recsys_model,
     )

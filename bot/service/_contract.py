@@ -12,6 +12,8 @@ from domain.entity.interaction import Interaction, InteractionAction
 
 class TrackRepositoryProtocol(Protocol):
     async def get_all_tracks(self) -> List[Track]: ...
+    
+    async def get_track_by_path(self, path: str) -> Track | None: ...
 
 
 class UserRepositoryProtocol(Protocol):
@@ -35,6 +37,4 @@ class InteractionRepositoryProtocol(Protocol):
 
 
 class RecommendationModelProtocol(Protocol):
-    def pick_next(
-        self, interaction: InteractionAction, liked: List[Track], disliked: List[Track]
-    ) -> Track: ...
+    def pick_next(self, likes: List[Track]) -> str: ...
