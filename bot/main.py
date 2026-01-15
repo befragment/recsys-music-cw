@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 from core.config import settings
 from core.start import start
 from core.container import Container
+from core.middleware import ContainerMiddleware
 
 
 async def main():
@@ -21,8 +22,8 @@ async def main():
     )
     dp = Dispatcher()
     
-    # Прикрепляем контейнер к диспетчеру
-    dp["container"] = container
+    # Регистрируем middleware для инъекции контейнера
+    dp.message.middleware(ContainerMiddleware(container))
     
     await start(dp, bot)
 

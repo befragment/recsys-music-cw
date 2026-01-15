@@ -1,5 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from domain.entity.interaction import Interaction
+
 
 class InteractionRepository:
     def __init__(self, session: AsyncSession):

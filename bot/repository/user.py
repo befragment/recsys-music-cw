@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from domain.entity.user import User
-from domain.entity.song import Track
-from domain.entity.interaction import InteractionType
+from domain.entity.track import Track
+from domain.entity.interaction import InteractionAction
 from repository._orm import UserORM, TrackORM, InteractionORM
 
 
@@ -41,8 +41,8 @@ class UserRepository:
     async def get_telegram_id_by_user_id(self, user_id: int) -> int:
         """Получить Telegram ID пользователя по ID"""
         result = await self.session.execute(
-            select(UserORM.id)
-            .where(UserORM.telegram_id == telegram_id)
+            select(UserORM.telegram_id)
+            .where(UserORM.id == user_id)
         )
         return result.scalar_one_or_none()
 
@@ -72,7 +72,7 @@ class UserRepository:
             select(TrackORM)
             .join(InteractionORM, InteractionORM.track_id == TrackORM.id)
             .where(InteractionORM.user_id == user_id, 
-                   InteractionORM.interaction == InteractionType.LIKE))
+                   InteractionORM.interaction == InteractionAction.like))
 
         track_orms = result.scalars().all()
         return [
@@ -92,7 +92,7 @@ class UserRepository:
             select(TrackORM)
             .join(InteractionORM, InteractionORM.track_id == TrackORM.id)
             .where(InteractionORM.user_id == user_id, 
-                   InteractionORM.interaction == InteractionType.DISLIKE))
+                   InteractionORM.interaction == InteractionAction.dislike))
 
         track_orms = result.scalars().all()
         return [

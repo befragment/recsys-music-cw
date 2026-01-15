@@ -1,6 +1,7 @@
 from typing import List, Protocol
 from domain.entity.track import Track
-from domain.entity.interaction import InteractionType
+from domain.entity.user import User
+from domain.entity.interaction import Interaction, InteractionAction
 
 """
 Файл в котором мы определяем контракты для работы с базой данных.

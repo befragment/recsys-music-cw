@@ -1,11 +1,13 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Optional
 
 
-@dataclass(frozen=True)
+@dataclass
 class User:
     telegram_id: int
-    gender: str
-    age: int
-    favorite_music_genre: str
-    created_at: datetime
+    id: Optional[int] = None
+    gender: Optional[str] = None
+    age: Optional[int] = None
+    favorite_music_genre: Optional[str] = None
+    created_at: datetime = field(default_factory=datetime.now)

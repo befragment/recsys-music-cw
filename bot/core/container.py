@@ -38,7 +38,7 @@ class Container(containers.DeclarativeContainer):
     
     # Model (singleton)
     recsys_model = providers.Singleton(
-        RandomRecommendationModel,
+        RecommendationModel,
     )
     
     # Services (создаются для каждого запроса)

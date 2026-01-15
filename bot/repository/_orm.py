@@ -18,6 +18,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from core.database import Base
+from domain.entity.interaction import InteractionAction
 
 
 

@@ -1,5 +1,14 @@
 from typing import Protocol, List
 
+from domain.entity.track import Track
+from domain.entity.user import User
+from domain.entity.interaction import InteractionAction
+
+"""
+Файл в котором мы определяем контракты для работы с бизнес-логикой приложения.
+Это позволяет нам использовать DI для работы с бизнес-логикой приложения.
+"""
+
 class InteractionServiceProtocol(Protocol):
     async def handle_user_interaction(
         self, 
@@ -17,4 +26,5 @@ class UserServiceProtocol(Protocol):
     async def get_disliked_tracks(self, user_id: int) -> List[Track]: ...
 
 
-class TrackServiceProtocol(Protocol): ...
+class TrackServiceProtocol(Protocol): 
+    ...

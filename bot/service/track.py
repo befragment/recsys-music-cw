@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from contracts import TrackRepositoryProtocol
+from service._contract import TrackRepositoryProtocol
 
 
 class TrackService:
